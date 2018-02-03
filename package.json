@@ -1,0 +1,26 @@
+{
+  "name": "http-client",
+  "version": "0.0.0",
+  "description": "HTTP client that allows being configured for different status codes.",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/workshare/js-http-client.git"
+  },
+  "keywords": [
+    "HTTP",
+    "client",
+    "REST",
+    "status",
+    "code"
+  ],
+  "author": "Manuel Morales",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/workshare/js-http-client/issues"
+  },
+  "homepage": "https://github.com/workshare/js-http-client#readme"
+}
