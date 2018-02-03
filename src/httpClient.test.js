@@ -55,5 +55,19 @@ describe('httpClient', () => {
         })
         .request('/test')
     })
+
+    it('doesn\'t overwrite the original one', (done) => {
+      const oldSpy = jest.fn()
+      const oldClient = this.httpClient.onResponse(oldSpy)
+
+      const newSpy = jest.fn()
+      const newClient = oldClient.onResponse(newSpy)
+
+      newClient.request('/test').then(() => {
+        expect(oldSpy).not.toHaveBeenCalled()
+        expect(newSpy).toHaveBeenCalled()
+        done()
+      })
+    })
   })
 })
