@@ -5,6 +5,7 @@ describe(`httpClient`, () => {
   beforeEach(() => {
     this.fetch = fetchMock.sandbox()
     this.fetch.get('/test', "Hello")
+    this.fetch.get('/not_found', {status: 404, body: "Not Found"})
     this.httpClient = originalHttpClient.setFetch(this.fetch)
   })
 
@@ -123,6 +124,68 @@ describe(`httpClient`, () => {
 
       newClient.runRequest('/missing_path').then(() => {
         expect(onResponse).toHaveBeenCalled()
+        expect(onSuccess).not.toHaveBeenCalled()
+        done()
+      })
+    })
+  })
+
+  describe(`on 200`, () => {
+    it(`onResponse is called`, (done) => {
+      const onResponse = jest.fn((resp) => { expect(resp.body).toEqual('Hello') })
+
+      const newClient = this.httpClient.onResponse(onResponse)
+
+      newClient.runRequest('/test').then(() => {
+        expect(onResponse).toHaveBeenCalled()
+        done()
+      })
+    })
+
+    it(`gives precedence to onSuccess over onResponse`, (done) => {
+      const onResponse = jest.fn()
+      const onError = jest.fn()
+      const onSuccess = jest.fn((resp) => { expect(resp.body).toEqual('Hello') })
+
+      const newClient = this.httpClient
+            .onResponse(onResponse)
+            .onError(onError)
+            .onSuccess(onSuccess)
+
+      newClient.runRequest('/test').then(() => {
+        expect(onResponse).not.toHaveBeenCalled()
+        expect(onError).not.toHaveBeenCalled()
+        expect(onSuccess).toHaveBeenCalled()
+        done()
+      })
+    })
+  })
+
+  describe(`on 400`, () => {
+    it(`onResponse is called`, (done) => {
+      const onResponse = jest.fn((resp) => { expect(resp.body).toEqual('Not Found') })
+
+      const newClient = this.httpClient.onResponse(onResponse)
+
+      newClient.runRequest('/not_found').then(() => {
+        expect(onResponse).toHaveBeenCalled()
+        done()
+      })
+    })
+
+    it(`gives precedence to onError over onResponse`, (done) => {
+      const onResponse = jest.fn()
+      const onError = jest.fn((resp) => { expect(resp.body).toEqual('Not Found') })
+      const onSuccess = jest.fn()
+
+      const newClient = this.httpClient
+            .onResponse(onResponse)
+            .onError(onError)
+            .onSuccess(onSuccess)
+
+      newClient.runRequest('/not_found').then(() => {
+        expect(onResponse).not.toHaveBeenCalled()
+        expect(onError).toHaveBeenCalled()
         expect(onSuccess).not.toHaveBeenCalled()
         done()
       })
