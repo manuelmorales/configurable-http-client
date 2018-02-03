@@ -1,4 +1,5 @@
 const httpClient = require('./httpClient')
+const fetchMock = require('fetch-mock')
 
 describe('httpClient', () => {
   describe('fetch', () => {
@@ -33,6 +34,23 @@ describe('httpClient', () => {
       httpClient.get('https://example.com')
 
       expect(globalFetch).toHaveBeenCalled()
+    })
+  })
+
+  describe('get', () => {
+    beforeEach(() => {
+      this.fetch = fetchMock.sandbox()
+      this.fetch.get('/test', 200)
+      this.httpClient = httpClient.setFetch(this.fetch)
+    })
+
+    it('returns the response from fetch', (done) => {
+      this.httpClient.get('/test')
+        .then(() => {
+          expect(this.fetch.called('/test')).toBe(true)
+          done()
+        })
+        .catch(done)
     })
   })
 })

@@ -3,6 +3,6 @@ module.exports = {
   getFetch: function () { return (this.fetchAttribute || global.fetch) },
 
   get: function (url) {
-    this.getFetch()(url)
+    return this.getFetch()(url)
   }
 }
