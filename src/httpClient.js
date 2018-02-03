@@ -24,17 +24,21 @@ module.exports = {
     return Object.assign({}, this, {onStatusCallbacks: newCallbacks})
   },
 
+  findCallbackByStatus: function (resp) {
+    return this.onStatusCallbacks[resp.status]
+  },
+
+  findCallbackBySuccess: function (resp) {
+    return resp.ok ? this.onSuccessCallback : this.onErrorCallback
+  },
+
   runRequest: function (url) {
-    let callback = this.onResponseCallback
 
     const promise = this.getFetch()(url).then((response) => {
-      if (this.onStatusCallbacks[response.status]) {
-        callback = this.onStatusCallbacks[response.status]
-      } else if (response.ok) {
-        callback = this.onSuccessCallback || this.onResponseCallback
-      } else {
-        callback = this.onErrorCallback || this.onResponseCallback
-      }
+      let callback =
+          this.findCallbackByStatus(response) ||
+          this.findCallbackBySuccess(response) ||
+          this.onResponseCallback
 
       return callback(response)
     })

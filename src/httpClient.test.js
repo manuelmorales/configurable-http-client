@@ -48,16 +48,6 @@ describe(`httpClient`, () => {
   })
 
   describe(`onResponse`, () => {
-    it(`is run after making the request`, (done) => {
-      this.httpClient
-        .onResponse((resp) => {
-          expect(resp.body).toEqual("Hello")
-          done()
-        })
-        .runRequest('/test')
-        .catch(done)
-    })
-
     it(`doesn't overwrite the original one`, (done) => {
       const oldSpy = jest.fn()
       const oldClient = this.httpClient.onResponse(oldSpy)
@@ -74,15 +64,6 @@ describe(`httpClient`, () => {
   })
 
   describe(`onSuccess`, () => {
-    it(`is run after making the request`, (done) => {
-      this.httpClient
-        .onSuccess((resp) => {
-          expect(resp.body).toEqual("Hello")
-          done()
-        })
-        .runRequest('/test')
-    })
-
     it(`doesn't overwrite the original one`, (done) => {
       const oldSpy = jest.fn()
       const oldClient = this.httpClient.onSuccess(oldSpy)
@@ -93,38 +74,6 @@ describe(`httpClient`, () => {
       newClient.runRequest('/test').then(() => {
         expect(oldSpy).not.toHaveBeenCalled()
         expect(newSpy).toHaveBeenCalled()
-        done()
-      })
-    })
-
-    it(`overrides onResponse`, (done) => {
-      const onResponse = jest.fn()
-      const onSuccess = jest.fn()
-
-      const newClient = this.httpClient
-            .onResponse(onResponse)
-            .onSuccess(onSuccess)
-
-      newClient.runRequest('/test').then(() => {
-        expect(onResponse).not.toHaveBeenCalled()
-        expect(onSuccess).toHaveBeenCalled()
-        done()
-      })
-    })
-
-    it(`doesn't override onResponse on error requests`, (done) => {
-      const onResponse = jest.fn()
-      const onSuccess = jest.fn()
-
-      this.fetch.get('/missing_path', 404)
-
-      const newClient = this.httpClient
-            .onResponse(onResponse)
-            .onSuccess(onSuccess)
-
-      newClient.runRequest('/missing_path').then(() => {
-        expect(onResponse).toHaveBeenCalled()
-        expect(onSuccess).not.toHaveBeenCalled()
         done()
       })
     })
@@ -139,8 +88,8 @@ describe(`httpClient`, () => {
       const newClient = oldClient.onStatus(404, newSpy)
 
       oldClient.runRequest('/not_found').then(() => {
-        expect(oldSpy).toHaveBeenCalled()
         expect(newSpy).not.toHaveBeenCalled()
+        expect(oldSpy).toHaveBeenCalled()
         done()
       })
     })
@@ -191,8 +140,8 @@ describe(`httpClient`, () => {
 
     it(`gives precedence to onError over onResponse`, (done) => {
       const onResponse = jest.fn()
-      const onError = jest.fn((resp) => { expect(resp.body).toEqual('Not Found') })
       const onSuccess = jest.fn()
+      const onError = jest.fn((resp) => { expect(resp.body).toEqual('Not Found') })
 
       const newClient = this.httpClient
             .onResponse(onResponse)
@@ -201,18 +150,18 @@ describe(`httpClient`, () => {
 
       newClient.runRequest('/not_found').then(() => {
         expect(onResponse).not.toHaveBeenCalled()
-        expect(onError).toHaveBeenCalled()
         expect(onSuccess).not.toHaveBeenCalled()
+        expect(onError).toHaveBeenCalled()
         done()
       })
     })
 
     it(`gives precedence to onStatus(404) over onError`, (done) => {
       const onResponse = jest.fn()
-      const onError = jest.fn()
-      const on404 = jest.fn((resp) => { expect(resp.body).toEqual('Not Found') })
-      const on403 = jest.fn()
       const onSuccess = jest.fn()
+      const onError = jest.fn()
+      const on403 = jest.fn()
+      const on404 = jest.fn((resp) => { expect(resp.body).toEqual('Not Found') })
 
       const newClient = this.httpClient
             .onResponse(onResponse)
@@ -223,10 +172,9 @@ describe(`httpClient`, () => {
 
       newClient.runRequest('/not_found').then(() => {
         expect(onResponse).not.toHaveBeenCalled()
-        expect(on403).not.toHaveBeenCalled()
-        expect(onResponse).not.toHaveBeenCalled()
-        expect(onError).not.toHaveBeenCalled()
         expect(onSuccess).not.toHaveBeenCalled()
+        expect(onError).not.toHaveBeenCalled()
+        expect(on403).not.toHaveBeenCalled()
         expect(on404).toHaveBeenCalled()
         done()
       })
