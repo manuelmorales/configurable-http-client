@@ -54,6 +54,7 @@ describe(`httpClient`, () => {
           done()
         })
         .runRequest('/test')
+        .catch(done)
     })
 
     it(`doesn't overwrite the original one`, (done) => {
@@ -66,6 +67,63 @@ describe(`httpClient`, () => {
       newClient.runRequest('/test').then(() => {
         expect(oldSpy).not.toHaveBeenCalled()
         expect(newSpy).toHaveBeenCalled()
+        done()
+      })
+    })
+  })
+
+  describe(`onSuccess`, () => {
+    it(`is run after making the request`, (done) => {
+      this.httpClient
+        .onSuccess((resp) => {
+          expect(resp.body).toEqual("Hello")
+          done()
+        })
+        .runRequest('/test')
+    })
+
+    it(`doesn't overwrite the original one`, (done) => {
+      const oldSpy = jest.fn()
+      const oldClient = this.httpClient.onSuccess(oldSpy)
+
+      const newSpy = jest.fn()
+      const newClient = oldClient.onSuccess(newSpy)
+
+      newClient.runRequest('/test').then(() => {
+        expect(oldSpy).not.toHaveBeenCalled()
+        expect(newSpy).toHaveBeenCalled()
+        done()
+      })
+    })
+
+    it(`overrides onResponse`, (done) => {
+      const onResponse = jest.fn()
+      const onSuccess = jest.fn()
+
+      const newClient = this.httpClient
+            .onResponse(onResponse)
+            .onSuccess(onSuccess)
+
+      newClient.runRequest('/test').then(() => {
+        expect(onResponse).not.toHaveBeenCalled()
+        expect(onSuccess).toHaveBeenCalled()
+        done()
+      })
+    })
+
+    it(`doesn't override onResponse on error requests`, (done) => {
+      const onResponse = jest.fn()
+      const onSuccess = jest.fn()
+
+      this.fetch.get('/missing_path', 404)
+
+      const newClient = this.httpClient
+            .onResponse(onResponse)
+            .onSuccess(onSuccess)
+
+      newClient.runRequest('/missing_path').then(() => {
+        expect(onResponse).toHaveBeenCalled()
+        expect(onSuccess).not.toHaveBeenCalled()
         done()
       })
     })
