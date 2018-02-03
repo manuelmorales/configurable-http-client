@@ -1,49 +1,39 @@
-const httpClient = require('./httpClient')
+const originalHttpClient = require('./httpClient')
 const fetchMock = require('fetch-mock')
 
 describe('httpClient', () => {
+  beforeEach(() => {
+    this.fetch = fetchMock.sandbox()
+    this.fetch.get('/test', "Hello")
+    this.httpClient = originalHttpClient.setFetch(this.fetch)
+  })
+
   describe('fetch', () => {
     it('uses global.fetch by default', () => {
-      const fetch = jest.fn()
-      global.fetch = fetch
-
-      httpClient.request('https://example.com')
-
-      expect(fetch).toHaveBeenCalled()
+      this.httpClient.request('/test')
+      expect(this.fetch.lastCall()).not.toBe(undefined)
     })
 
     it('allows setting a new fetch()', () => {
-      const globalFetch = jest.fn()
-      global.fetch = globalFetch
+      const newFetch = fetchMock.sandbox().get('/test2', "Hello")
+      this.httpClient = this.httpClient.setFetch(newFetch)
 
-      const fetch = jest.fn()
-      httpClient
-        .setFetch(fetch)
-        .request('https://example.com')
+      this.httpClient.request('/test2')
 
-      expect(fetch).toHaveBeenCalled()
+      expect(newFetch.lastCall()).not.toBe(undefined)
     })
 
     it('doesnt\'t override the original one', () => {
-      const globalFetch = jest.fn()
-      global.fetch = globalFetch
+      const newFetch = fetchMock.sandbox().get('/test2', "Hello")
+      this.httpClient = this.httpClient.setFetch(newFetch)
 
-      const fetch = jest.fn()
-      httpClient.setFetch(fetch)
+      this.httpClient.request('/test2')
 
-      httpClient.request('https://example.com')
-
-      expect(globalFetch).toHaveBeenCalled()
+      expect(this.fetch.lastCall()).toBe(undefined)
     })
   })
 
   describe('request', () => {
-    beforeEach(() => {
-      this.fetch = fetchMock.sandbox()
-      this.fetch.get('/test', "Hello")
-      this.httpClient = httpClient.setFetch(this.fetch)
-    })
-
     it('returns the response from fetch', (done) => {
       this.httpClient.request('/test')
 
@@ -54,7 +44,16 @@ describe('httpClient', () => {
 
         .catch(done)
     })
+  })
 
-
+  describe('onResponse', () => {
+    it('is run after making the request', (done) => {
+      this.httpClient
+        .onResponse((resp) => {
+          expect(resp.body).toEqual("Hello")
+          done()
+        })
+        .request('/test')
+    })
   })
 })
