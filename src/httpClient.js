@@ -3,7 +3,7 @@ module.exports = {
   getFetch: function () { return (this.fetchAttribute || global.fetch) },
   onResponseCallback: function(resp) { return resp },
 
-  request: function (url) {
+  runRequest: function (url) {
     return (
       this.getFetch()(url)
         .then((resp) => this.onResponseCallback(resp))

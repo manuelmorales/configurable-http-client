@@ -10,7 +10,7 @@ describe(`httpClient`, () => {
 
   describe(`fetch`, () => {
     it(`uses global.fetch by default`, () => {
-      this.httpClient.request('/test')
+      this.httpClient.runRequest('/test')
       expect(this.fetch.lastCall()).not.toBe(undefined)
     })
 
@@ -18,7 +18,7 @@ describe(`httpClient`, () => {
       const newFetch = fetchMock.sandbox().get('/test2', "Hello")
       this.httpClient = this.httpClient.setFetch(newFetch)
 
-      this.httpClient.request('/test2')
+      this.httpClient.runRequest('/test2')
 
       expect(newFetch.lastCall()).not.toBe(undefined)
     })
@@ -27,7 +27,7 @@ describe(`httpClient`, () => {
       const newFetch = fetchMock.sandbox().get('/test2', "Hello")
       this.httpClient = this.httpClient.setFetch(newFetch)
 
-      this.httpClient.request('/test2')
+      this.httpClient.runRequest('/test2')
 
       expect(this.fetch.lastCall()).toBe(undefined)
     })
@@ -35,7 +35,7 @@ describe(`httpClient`, () => {
 
   describe(`request`, () => {
     it(`returns the response from fetch`, (done) => {
-      this.httpClient.request('/test')
+      this.httpClient.runRequest('/test')
 
         .then((resp) => {
           expect(resp.body).toEqual("Hello")
@@ -53,7 +53,7 @@ describe(`httpClient`, () => {
           expect(resp.body).toEqual("Hello")
           done()
         })
-        .request('/test')
+        .runRequest('/test')
     })
 
     it(`doesn't overwrite the original one`, (done) => {
@@ -63,7 +63,7 @@ describe(`httpClient`, () => {
       const newSpy = jest.fn()
       const newClient = oldClient.onResponse(newSpy)
 
-      newClient.request('/test').then(() => {
+      newClient.runRequest('/test').then(() => {
         expect(oldSpy).not.toHaveBeenCalled()
         expect(newSpy).toHaveBeenCalled()
         done()
