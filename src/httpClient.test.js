@@ -1,20 +1,20 @@
 const originalHttpClient = require('./httpClient')
 const fetchMock = require('fetch-mock')
 
-describe('httpClient', () => {
+describe(`httpClient`, () => {
   beforeEach(() => {
     this.fetch = fetchMock.sandbox()
     this.fetch.get('/test', "Hello")
     this.httpClient = originalHttpClient.setFetch(this.fetch)
   })
 
-  describe('fetch', () => {
-    it('uses global.fetch by default', () => {
+  describe(`fetch`, () => {
+    it(`uses global.fetch by default`, () => {
       this.httpClient.request('/test')
       expect(this.fetch.lastCall()).not.toBe(undefined)
     })
 
-    it('allows setting a new fetch()', () => {
+    it(`allows setting a new fetch()`, () => {
       const newFetch = fetchMock.sandbox().get('/test2', "Hello")
       this.httpClient = this.httpClient.setFetch(newFetch)
 
@@ -23,7 +23,7 @@ describe('httpClient', () => {
       expect(newFetch.lastCall()).not.toBe(undefined)
     })
 
-    it('doesnt\'t override the original one', () => {
+    it(`doesn't override the original one`, () => {
       const newFetch = fetchMock.sandbox().get('/test2', "Hello")
       this.httpClient = this.httpClient.setFetch(newFetch)
 
@@ -33,8 +33,8 @@ describe('httpClient', () => {
     })
   })
 
-  describe('request', () => {
-    it('returns the response from fetch', (done) => {
+  describe(`request`, () => {
+    it(`returns the response from fetch`, (done) => {
       this.httpClient.request('/test')
 
         .then((resp) => {
@@ -46,8 +46,8 @@ describe('httpClient', () => {
     })
   })
 
-  describe('onResponse', () => {
-    it('is run after making the request', (done) => {
+  describe(`onResponse`, () => {
+    it(`is run after making the request`, (done) => {
       this.httpClient
         .onResponse((resp) => {
           expect(resp.body).toEqual("Hello")
@@ -56,7 +56,7 @@ describe('httpClient', () => {
         .request('/test')
     })
 
-    it('doesn\'t overwrite the original one', (done) => {
+    it(`doesn't overwrite the original one`, (done) => {
       const oldSpy = jest.fn()
       const oldClient = this.httpClient.onResponse(oldSpy)
 
