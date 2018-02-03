@@ -7,7 +7,7 @@ describe('httpClient', () => {
       const fetch = jest.fn()
       global.fetch = fetch
 
-      httpClient.get('https://example.com')
+      httpClient.request('https://example.com')
 
       expect(fetch).toHaveBeenCalled()
     })
@@ -19,7 +19,7 @@ describe('httpClient', () => {
       const fetch = jest.fn()
       httpClient
         .setFetch(fetch)
-        .get('https://example.com')
+        .request('https://example.com')
 
       expect(fetch).toHaveBeenCalled()
     })
@@ -31,13 +31,13 @@ describe('httpClient', () => {
       const fetch = jest.fn()
       httpClient.setFetch(fetch)
 
-      httpClient.get('https://example.com')
+      httpClient.request('https://example.com')
 
       expect(globalFetch).toHaveBeenCalled()
     })
   })
 
-  describe('get', () => {
+  describe('request', () => {
     beforeEach(() => {
       this.fetch = fetchMock.sandbox()
       this.fetch.get('/test', "Hello")
@@ -45,12 +45,16 @@ describe('httpClient', () => {
     })
 
     it('returns the response from fetch', (done) => {
-      this.httpClient.get('/test')
+      this.httpClient.request('/test')
+
         .then((resp) => {
           expect(resp.body).toEqual("Hello")
           done()
         })
+
         .catch(done)
     })
+
+
   })
 })
