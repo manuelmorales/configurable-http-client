@@ -40,14 +40,14 @@ describe('httpClient', () => {
   describe('get', () => {
     beforeEach(() => {
       this.fetch = fetchMock.sandbox()
-      this.fetch.get('/test', 200)
+      this.fetch.get('/test', "Hello")
       this.httpClient = httpClient.setFetch(this.fetch)
     })
 
     it('returns the response from fetch', (done) => {
       this.httpClient.get('/test')
-        .then(() => {
-          expect(this.fetch.called('/test')).toBe(true)
+        .then((resp) => {
+          expect(resp.body).toEqual("Hello")
           done()
         })
         .catch(done)
