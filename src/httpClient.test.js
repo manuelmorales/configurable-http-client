@@ -130,6 +130,22 @@ describe(`httpClient`, () => {
     })
   })
 
+  describe(`onStatus`, () => {
+    it(`doesn't overwrite the original one`, (done) => {
+      const oldSpy = jest.fn()
+      const oldClient = this.httpClient.onResponse(oldSpy)
+
+      const newSpy = jest.fn()
+      const newClient = oldClient.onStatus(404, newSpy)
+
+      oldClient.runRequest('/not_found').then(() => {
+        expect(oldSpy).toHaveBeenCalled()
+        expect(newSpy).not.toHaveBeenCalled()
+        done()
+      })
+    })
+  })
+
   describe(`on 200`, () => {
     it(`onResponse is called`, (done) => {
       const onResponse = jest.fn((resp) => { expect(resp.body).toEqual('Hello') })
@@ -187,6 +203,31 @@ describe(`httpClient`, () => {
         expect(onResponse).not.toHaveBeenCalled()
         expect(onError).toHaveBeenCalled()
         expect(onSuccess).not.toHaveBeenCalled()
+        done()
+      })
+    })
+
+    it(`gives precedence to onStatus(404) over onError`, (done) => {
+      const onResponse = jest.fn()
+      const onError = jest.fn()
+      const on404 = jest.fn((resp) => { expect(resp.body).toEqual('Not Found') })
+      const on403 = jest.fn()
+      const onSuccess = jest.fn()
+
+      const newClient = this.httpClient
+            .onResponse(onResponse)
+            .onError(onError)
+            .onStatus(403, on403)
+            .onStatus(404, on404)
+            .onSuccess(onSuccess)
+
+      newClient.runRequest('/not_found').then(() => {
+        expect(onResponse).not.toHaveBeenCalled()
+        expect(on403).not.toHaveBeenCalled()
+        expect(onResponse).not.toHaveBeenCalled()
+        expect(onError).not.toHaveBeenCalled()
+        expect(onSuccess).not.toHaveBeenCalled()
+        expect(on404).toHaveBeenCalled()
         done()
       })
     })

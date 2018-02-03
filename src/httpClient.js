@@ -17,11 +17,20 @@ module.exports = {
     return Object.assign({}, this, {onErrorCallback: callback})
   },
 
+  onStatusCallbacks: {},
+  onStatus: function (status, callback) {
+    const newCallbacks = Object.assign({}, this.onStatusCallbacks)
+    newCallbacks[status] = callback
+    return Object.assign({}, this, {onStatusCallbacks: newCallbacks})
+  },
+
   runRequest: function (url) {
     let callback = this.onResponseCallback
 
     const promise = this.getFetch()(url).then((response) => {
-      if (response.ok) {
+      if (this.onStatusCallbacks[response.status]) {
+        callback = this.onStatusCallbacks[response.status]
+      } else if (response.ok) {
         callback = this.onSuccessCallback || this.onResponseCallback
       } else {
         callback = this.onErrorCallback || this.onResponseCallback
