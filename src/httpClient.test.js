@@ -34,7 +34,7 @@ describe(`httpClient`, () => {
     })
   })
 
-  describe(`request`, () => {
+  describe(`runRequest`, () => {
     it(`returns the response from fetch`, (done) => {
       this.httpClient.runRequest('/test')
 
@@ -180,4 +180,36 @@ describe(`httpClient`, () => {
       })
     })
   })
+
+  it(`allows POST`, (done) => {
+    this.fetch.post('/post', "Hello")
+
+    this.httpClient.runRequest('/post', { method: 'POST' }).then(() => {
+      expect(this.fetch.called('/post')).toBe(true)
+      done()
+    })
+  })
+
+  it(`allows passing an object as json_body`, (done) => {
+    this.fetch.post('/post', (path, opts) => {
+      expect(opts.body).toEqual('{"a":1}')
+      expect(opts.headers['Content-Type']).toEqual('application/json')
+      return 200
+    })
+
+    const opts = { method: 'POST', json_body: {a: 1} }
+
+    this.httpClient.runRequest('/post', opts).then(() => {
+      expect(this.fetch.called('/post')).toBe(true)
+      done()
+    })
+  })
+
+  describe(`Request body`, () => {
+  })
+
+  describe(`query params`, () => {})
+  describe(`Response body`, () => {})
+  describe(`connection errors`, () => {})
+  describe(`request order`, () => {})
 })

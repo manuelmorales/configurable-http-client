@@ -32,9 +32,22 @@ module.exports = {
     return resp.ok ? this.onSuccessCallback : this.onErrorCallback
   },
 
-  runRequest: function (url) {
+  runRequest: function (url, opts) {
+    const fetch = this.getFetch()
+    const fetchOpts = (opts && Object.assign({}, opts)) || {}
 
-    const promise = this.getFetch()(url).then((response) => {
+    if (fetchOpts.json_body) {
+      fetchOpts['body'] = JSON.stringify(fetchOpts.json_body)
+
+      fetchOpts['headers'] = Object.assign(
+        opts.headers || {},
+        {'Content-Type':'application/json'}
+      )
+
+      delete fetchOpts.json_body
+    }
+
+    const promise = fetch(url, fetchOpts).then((response) => {
       let callback =
           this.findCallbackByStatus(response) ||
           this.findCallbackBySuccess(response) ||
