@@ -47,51 +47,45 @@ describe(`httpClient`, () => {
     })
   })
 
-  describe(`onResponse`, () => {
-    it(`doesn't overwrite the original one`, (done) => {
-      const oldSpy = jest.fn()
-      const oldClient = this.httpClient.onResponse(oldSpy)
+  it(`onResponse doesn't overwrite the original one`, (done) => {
+    const oldSpy = jest.fn()
+    const oldClient = this.httpClient.onResponse(oldSpy)
 
-      const newSpy = jest.fn()
-      const newClient = oldClient.onResponse(newSpy)
+    const newSpy = jest.fn()
+    const newClient = oldClient.onResponse(newSpy)
 
-      newClient.runRequest('/test').then(() => {
-        expect(oldSpy).not.toHaveBeenCalled()
-        expect(newSpy).toHaveBeenCalled()
-        done()
-      })
+    newClient.runRequest('/test').then(() => {
+      expect(oldSpy).not.toHaveBeenCalled()
+      expect(newSpy).toHaveBeenCalled()
+      done()
     })
   })
 
-  describe(`onSuccess`, () => {
-    it(`doesn't overwrite the original one`, (done) => {
-      const oldSpy = jest.fn()
-      const oldClient = this.httpClient.onSuccess(oldSpy)
+  it(`onSuccess doesn't overwrite the original one`, (done) => {
+    const oldSpy = jest.fn()
+    const oldClient = this.httpClient.onSuccess(oldSpy)
 
-      const newSpy = jest.fn()
-      const newClient = oldClient.onSuccess(newSpy)
+    const newSpy = jest.fn()
+    const newClient = oldClient.onSuccess(newSpy)
 
-      newClient.runRequest('/test').then(() => {
-        expect(oldSpy).not.toHaveBeenCalled()
-        expect(newSpy).toHaveBeenCalled()
-        done()
-      })
+    newClient.runRequest('/test').then(() => {
+      expect(oldSpy).not.toHaveBeenCalled()
+      expect(newSpy).toHaveBeenCalled()
+      done()
     })
   })
 
-  describe(`onStatus`, () => {
-    it(`doesn't overwrite the original one`, (done) => {
-      const oldSpy = jest.fn()
-      const oldClient = this.httpClient.onResponse(oldSpy)
+  it(`onStatus doesn't overwrite the original one`, (done) => {
+    const oldSpy = jest.fn()
+    const oldClient = this.httpClient.onResponse(oldSpy)
 
-      const newSpy = jest.fn()
-      const newClient = oldClient.onStatus(404, newSpy)
+    const newSpy = jest.fn()
+    const newClient = oldClient.onStatus(404, newSpy)
 
-      oldClient.runRequest('/not_found').then(() => {
-        expect(newSpy).not.toHaveBeenCalled()
-        expect(oldSpy).toHaveBeenCalled()
-        done()
-      })
+    oldClient.runRequest('/not_found').then(() => {
+      expect(newSpy).not.toHaveBeenCalled()
+      expect(oldSpy).toHaveBeenCalled()
+      done()
     })
   })
 
