@@ -32,9 +32,20 @@ module.exports = {
     return resp.ok ? this.onSuccessCallback : this.onErrorCallback
   },
 
+  request: function (url, opts) {
+    return Object.assign({}, this, {requestUrl: url, requestOpts: opts})
+  },
+
   runRequest: function (url, opts) {
+    return this.request(url, opts).run()
+  },
+
+  run: function () {
+    const url = this.requestUrl
+    const opts = this.requestOpts || {}
+
     const fetch = this.getFetch()
-    const fetchOpts = (opts && Object.assign({}, opts)) || {}
+    const fetchOpts = Object.assign({}, opts) || {}
 
     if (fetchOpts.json_body) {
       fetchOpts['body'] = JSON.stringify(fetchOpts.json_body)

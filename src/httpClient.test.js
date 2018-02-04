@@ -205,11 +205,11 @@ describe(`httpClient`, () => {
     })
   })
 
-  describe(`Request body`, () => {
+  it('allows setting the request before the callbacks with request()', (done) => {
+    this.httpClient.request('/test').onStatus(200, () => done()).run()
   })
 
-  describe(`query params`, () => {})
-  describe(`Response body`, () => {})
-  describe(`connection errors`, () => {})
-  describe(`request order`, () => {})
+  it.skip(`allows reading the parsed_body`, () => {})
+  it.skip(`allows clearing callbacks`, () => {}) // Pass null
+  it.skip(`allows passing query params as a parameter`, () => {})
 })
