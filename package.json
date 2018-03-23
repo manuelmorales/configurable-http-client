@@ -24,7 +24,10 @@
   },
   "homepage": "https://github.com/workshare/js-http-client#readme",
   "devDependencies": {
-    "fetch-mock": "^6.0.0",
+    "fetch-mock": "^6.3.0",
     "jest": "^22.1.4"
+  },
+  "dependencies": {
+    "node-fetch": "^2.1.1"
   }
 }
