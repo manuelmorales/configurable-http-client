@@ -1,4 +1,4 @@
-module.exports = {
+const httpClient = {
   values: {},
 
   defaultValuesFunctions: {
@@ -21,9 +21,6 @@ module.exports = {
 
     return Object.assign({}, this, {values: newValues})
   },
-
-  onResponse: function(value) { return this.newWithValue('onResponse', value) },
-  fetch: function(value) { return this.newWithValue('fetch', value) },
 
   onSuccessCallback: null,
   onSuccess: function (callback) {
@@ -98,4 +95,14 @@ module.exports = {
 
     return (promise)
   }
-}
+};
+
+
+[
+  'onResponse',
+  'fetch',
+].forEach(function (key) {
+ httpClient[key] = function (value) { return this.newWithValue(key, value) }
+})
+
+module.exports = httpClient
