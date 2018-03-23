@@ -207,9 +207,11 @@ describe(`httpClient`, () => {
     const options = {credentials: 'same-origin'}
 
     this.fetch.get('/assert_options', (path, opts) => {
-      console.log(opts)
-      expect(opts).toEqual(options)
-      done()
+      return new Promise((resolve) => {
+        expect(opts).toEqual(options)
+        resolve('Some body')
+        done()
+      })
     })
 
     this.httpClient
@@ -220,4 +222,5 @@ describe(`httpClient`, () => {
   it.skip(`allows reading the parsed_body`, () => {})
   it.skip(`allows clearing callbacks`, () => {}) // Pass null
   it.skip(`allows passing query params as a parameter`, () => {})
+  it.skip(`allows configuring optons`, () => {})
 })
