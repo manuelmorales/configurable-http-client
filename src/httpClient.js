@@ -50,11 +50,6 @@ const httpClient = {
     return Object.assign({}, this, {requestUrlValue: url})
   },
 
-  requestOptions: function (opts) {
-    const options = {optionsValue: Object.assign({}, this.optionsValue, opts)}
-    return Object.assign({}, this, options)
-  },
-
   request: function (url, opts) {
     return this
       .requestUrl(url)
@@ -67,7 +62,7 @@ const httpClient = {
 
   run: function () {
     const url = this.requestUrlValue
-    const opts = this.optionsValue || {}
+    const opts = this.value('requestOptions')
 
     const fetch = this.value('fetch')
     const fetchOpts = Object.assign({}, opts) || {}
@@ -101,6 +96,7 @@ httpClient.defineValue('onResponse', () => resp => resp);
 httpClient.defineValue('onSuccess', () => null);
 httpClient.defineValue('onError', () => null);
 httpClient.defineMergedValue('onStatusCallbacks', () => ({}));
+httpClient.defineMergedValue('requestOptions', () => ({}));
 
 httpClient.onStatus = function (status, callback) {
   const argument = {}
