@@ -32,8 +32,19 @@ module.exports = {
     return resp.ok ? this.onSuccessCallback : this.onErrorCallback
   },
 
+  requestUrl: function (url) {
+    return Object.assign({}, this, {requestUrlValue: url})
+  },
+
+  requestOptions: function (opts) {
+    const options = {optionsValue: Object.assign({}, this.optionsValue, opts)}
+    return Object.assign({}, this, options)
+  },
+
   request: function (url, opts) {
-    return Object.assign({}, this, {requestUrl: url, requestOpts: opts})
+    return this
+      .requestUrl(url)
+      .requestOptions(opts)
   },
 
   runRequest: function (url, opts) {
@@ -41,8 +52,8 @@ module.exports = {
   },
 
   run: function () {
-    const url = this.requestUrl
-    const opts = this.requestOpts || {}
+    const url = this.requestUrlValue
+    const opts = this.optionsValue || {}
 
     const fetch = this.getFetch()
     const fetchOpts = Object.assign({}, opts) || {}

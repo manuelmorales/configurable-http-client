@@ -203,6 +203,20 @@ describe(`httpClient`, () => {
     this.httpClient.request('/test').onStatus(200, () => done()).run()
   })
 
+  it('allows setting the request options before the callbacks', (done) => {
+    const options = {credentials: 'same-origin'}
+
+    this.fetch.get('/assert_options', (path, opts) => {
+      console.log(opts)
+      expect(opts).toEqual(options)
+      done()
+    })
+
+    this.httpClient
+      .requestOptions(options)
+      .runRequest('/assert_options')
+  })
+
   it.skip(`allows reading the parsed_body`, () => {})
   it.skip(`allows clearing callbacks`, () => {}) // Pass null
   it.skip(`allows passing query params as a parameter`, () => {})
