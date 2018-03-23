@@ -13,11 +13,14 @@ const httpClient = {
   },
 
   defineValue: function(key, defaultFunction) {
+    defaultFunction = defaultFunction || function () { return null }
+
     this[key] = function (value) { return this.newWithValue(key, value) }
     this.defaultValuesFunctions[key] = defaultFunction
   },
 
   defineMergedValue: function(key, defaultFunction) {
+    defaultFunction = defaultFunction || function () { return {} }
     this.defineValue(key, defaultFunction)
 
     this[key] = function (subValues) {
@@ -89,11 +92,11 @@ const httpClient = {
 
 httpClient.defineValue('fetch', () => global.fetch);
 httpClient.defineValue('onResponse', () => resp => resp);
-httpClient.defineValue('onSuccess', () => null);
-httpClient.defineValue('onError', () => null);
-httpClient.defineMergedValue('onStatusCallbacks', () => ({}));
-httpClient.defineMergedValue('requestOptions', () => ({}));
-httpClient.defineValue('url', () => null);
+httpClient.defineValue('onSuccess');
+httpClient.defineValue('onError');
+httpClient.defineMergedValue('onStatusCallbacks');
+httpClient.defineMergedValue('requestOptions');
+httpClient.defineValue('url');
 
 httpClient.onStatus = function (status, callback) {
   const argument = {}
