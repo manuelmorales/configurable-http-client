@@ -1,11 +1,29 @@
 module.exports = {
-  setFetch: function (fetch) { return Object.assign({}, this, {fetchAttribute: fetch}) },
-  getFetch: function () { return (this.fetchAttribute || global.fetch) },
+  values: {},
 
-  onResponseCallback: function(resp) { return resp },
-  onResponse: function (callback) {
-    return Object.assign({}, this, {onResponseCallback: callback})
+  defaultValuesFunctions: {
+    onResponse: function() { return function(resp) { return resp } }
   },
+
+  value: function(name) {
+    if (this.values[name]) {
+      return this.values[name]
+    } else if (this.defaultValuesFunctions[name]) {
+      return this.defaultValuesFunctions[name]()
+    } else {
+      throw "value not found"
+    }
+  },
+
+  newWithValue: function(key, value) {
+    const newValues = Object.assign({}, this.values)
+    newValues[key] = value
+
+    return Object.assign({}, this, {values: newValues})
+  },
+
+  onResponse: function(value) { return this.newWithValue('onResponse', value) },
+  fetch: function(value) { return this.newWithValue('fetch', value) },
 
   onSuccessCallback: null,
   onSuccess: function (callback) {
@@ -55,7 +73,7 @@ module.exports = {
     const url = this.requestUrlValue
     const opts = this.optionsValue || {}
 
-    const fetch = this.getFetch()
+    const fetch = this.value('fetch')
     const fetchOpts = Object.assign({}, opts) || {}
 
     if (fetchOpts.json_body) {
@@ -73,7 +91,7 @@ module.exports = {
       let callback =
           this.findCallbackByStatus(response) ||
           this.findCallbackBySuccess(response) ||
-          this.onResponseCallback
+          this.value('onResponse')
 
       return callback(response)
     })

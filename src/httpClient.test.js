@@ -6,7 +6,7 @@ describe(`httpClient`, () => {
     this.fetch = fetchMock.sandbox()
     this.fetch.get('/test', "Hello")
     this.fetch.get('/not_found', {status: 404, body: "Not Found"})
-    this.httpClient = originalHttpClient.setFetch(this.fetch)
+    this.httpClient = originalHttpClient.fetch(this.fetch)
   })
 
   describe(`fetch`, () => {
@@ -17,7 +17,7 @@ describe(`httpClient`, () => {
 
     it(`allows setting a new fetch()`, () => {
       const newFetch = fetchMock.sandbox().get('/test2', "Hello")
-      this.httpClient = this.httpClient.setFetch(newFetch)
+      this.httpClient = this.httpClient.fetch(newFetch)
 
       this.httpClient.runRequest('/test2')
 
@@ -26,7 +26,7 @@ describe(`httpClient`, () => {
 
     it(`doesn't override the original one`, () => {
       const newFetch = fetchMock.sandbox().get('/test2', "Hello")
-      this.httpClient = this.httpClient.setFetch(newFetch)
+      this.httpClient = this.httpClient.fetch(newFetch)
 
       this.httpClient.runRequest('/test2')
 
