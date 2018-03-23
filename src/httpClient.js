@@ -46,13 +46,9 @@ const httpClient = {
     return resp.ok ? this.value('onSuccess') : this.value('onError')
   },
 
-  requestUrl: function (url) {
-    return Object.assign({}, this, {requestUrlValue: url})
-  },
-
   request: function (url, opts) {
     return this
-      .requestUrl(url)
+      .url(url)
       .requestOptions(opts)
   },
 
@@ -61,7 +57,7 @@ const httpClient = {
   },
 
   run: function () {
-    const url = this.requestUrlValue
+    const url = this.value('url')
     const opts = this.value('requestOptions')
 
     const fetch = this.value('fetch')
@@ -97,6 +93,7 @@ httpClient.defineValue('onSuccess', () => null);
 httpClient.defineValue('onError', () => null);
 httpClient.defineMergedValue('onStatusCallbacks', () => ({}));
 httpClient.defineMergedValue('requestOptions', () => ({}));
+httpClient.defineValue('url', () => null);
 
 httpClient.onStatus = function (status, callback) {
   const argument = {}
