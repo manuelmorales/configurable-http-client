@@ -1,9 +1,6 @@
 const httpClient = {
   values: {},
-
-  defaultValuesFunctions: {
-    onResponse: function() { return function(resp) { return resp } }
-  },
+  defaultValuesFunctions: {},
 
   value: function(name) {
     if (this.values[name]) {
@@ -11,7 +8,20 @@ const httpClient = {
     } else if (this.defaultValuesFunctions[name]) {
       return this.defaultValuesFunctions[name]()
     } else {
-      throw "value not found"
+      throw "value " + name + " not found"
+    }
+  },
+
+  defineValue: function(key, defaultFunction) {
+    this[key] = function (value) { return this.newWithValue(key, value) }
+    this.defaultValuesFunctions[key] = defaultFunction
+  },
+
+  defineMergedValue: function(key, defaultFunction) {
+    this.defineValue(key, defaultFunction)
+
+    this[key] = function (subValues) {
+      return this.newWithMergedValue(key, subValues)
     }
   },
 
@@ -22,29 +32,18 @@ const httpClient = {
     return Object.assign({}, this, {values: newValues})
   },
 
-  onSuccessCallback: null,
-  onSuccess: function (callback) {
-    return Object.assign({}, this, {onSuccessCallback: callback})
-  },
-
-  onErrorCallback: null,
-  onError: function (callback) {
-    return Object.assign({}, this, {onErrorCallback: callback})
-  },
-
-  onStatusCallbacks: {},
-  onStatus: function (status, callback) {
-    const newCallbacks = Object.assign({}, this.onStatusCallbacks)
-    newCallbacks[status] = callback
-    return Object.assign({}, this, {onStatusCallbacks: newCallbacks})
+  newWithMergedValue: function(key, object) {
+    const oldObject = this.value(key)
+    const newObject = Object.assign({}, oldObject, object)
+    return this.newWithValue(key, newObject)
   },
 
   findCallbackByStatus: function (resp) {
-    return this.onStatusCallbacks[resp.status]
+    return this.value('onStatusCallbacks')[resp.status]
   },
 
   findCallbackBySuccess: function (resp) {
-    return resp.ok ? this.onSuccessCallback : this.onErrorCallback
+    return resp.ok ? this.value('onSuccess') : this.value('onError')
   },
 
   requestUrl: function (url) {
@@ -97,12 +96,16 @@ const httpClient = {
   }
 };
 
+httpClient.defineValue('fetch', () => global.fetch);
+httpClient.defineValue('onResponse', () => resp => resp);
+httpClient.defineValue('onSuccess', () => null);
+httpClient.defineValue('onError', () => null);
+httpClient.defineMergedValue('onStatusCallbacks', () => ({}));
 
-[
-  'onResponse',
-  'fetch',
-].forEach(function (key) {
- httpClient[key] = function (value) { return this.newWithValue(key, value) }
-})
+httpClient.onStatus = function (status, callback) {
+  const argument = {}
+  argument[status] = callback
+  return this.onStatusCallbacks(argument)
+}
 
 module.exports = httpClient
