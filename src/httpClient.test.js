@@ -187,7 +187,7 @@ describe(`httpClient`, () => {
   it(`allows passing an object as json_body`, (done) => {
     this.fetch.post('/post', (path, opts) => {
       expect(opts.body).toEqual('{"a":1}')
-      expect(opts.headers['Content-Type']).toEqual('application/json') // TODO UTF-8
+      expect(opts.headers['Content-Type']).toEqual('application/json; charset=utf-8')
       return 200
     })
 
