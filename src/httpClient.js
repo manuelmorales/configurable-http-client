@@ -77,7 +77,9 @@ const httpClient = {
       delete fetchOpts.json_body
     }
 
-    const promise = fetch(url, fetchOpts).then((response) => {
+    const promise = fetch(url, fetchOpts)
+      .catch(this.value('onConnectionError'))
+      .then((response) => {
       let callback =
           this.findCallbackByStatus(response) ||
           this.findCallbackBySuccess(response) ||
@@ -94,6 +96,7 @@ httpClient.defineValue('fetch', () => global.fetch);
 httpClient.defineValue('onResponse', () => resp => resp);
 httpClient.defineValue('onSuccess');
 httpClient.defineValue('onError');
+httpClient.defineValue('onConnectionError', () => err => err);
 httpClient.defineMergedValue('onStatusCallbacks');
 httpClient.defineMergedValue('requestOptions');
 httpClient.defineValue('url');

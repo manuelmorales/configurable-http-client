@@ -235,7 +235,18 @@ describe(`httpClient`, () => {
     })
   })
 
+  it(`allows defining behavior on connection error`, () => {
+    expect.assertions(1)
+
+    this.fetch.get('/connection_error', () => { throw 'Connection Error'})
+
+    const newClient = this.httpClient
+      .onConnectionError((err) => { expect(err).toEqual('Connection Error') })
+      .request('/connection_error')
+
+    newClient.run()
+  })
+
   it.skip(`allows reading the parsed_body`, () => {})
   it.skip(`allows passing query params as a parameter`, () => {})
-  it.skip(`allows defining behavior on connection error`, () => {})
 })
