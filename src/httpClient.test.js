@@ -264,6 +264,17 @@ describe(`httpClient`, () => {
       })
     })
 
+    it(`lets the error go through as default behavior`, (done) => {
+      expect.assertions(1)
+
+      this.fetch.get('/connection_error', () => { throw 'Connection Error'})
+
+      this.httpClient.runRequest('/connection_error').catch((err) => {
+        expect(err).toEqual('Connection Error')
+        done()
+      })
+    })
+
   })
 
   it.skip(`allows reading the parsed_body`, () => {})

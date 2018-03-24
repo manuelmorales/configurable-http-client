@@ -95,7 +95,7 @@ httpClient.defineValue('fetch', () => global.fetch);
 httpClient.defineValue('onResponse', () => resp => resp);
 httpClient.defineValue('onSuccess');
 httpClient.defineValue('onErrorResponse');
-httpClient.defineValue('onConnectionError', () => err => err);
+httpClient.defineValue('onConnectionError', () => (err) => { throw err });
 httpClient.defineMergedValue('onStatusCallbacks');
 httpClient.defineMergedValue('requestOptions');
 httpClient.defineValue('url');
