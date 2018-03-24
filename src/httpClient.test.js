@@ -222,4 +222,5 @@ describe(`httpClient`, () => {
   it.skip(`allows reading the parsed_body`, () => {})
   it.skip(`allows clearing callbacks`, () => {}) // Pass null
   it.skip(`allows passing query params as a parameter`, () => {})
+  it.skip(`allows defining behavior on connection error`, () => {})
 })
