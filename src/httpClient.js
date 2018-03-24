@@ -78,15 +78,14 @@ const httpClient = {
     }
 
     const promise = fetch(url, fetchOpts)
-      .catch(this.value('onConnectionError'))
       .then((response) => {
-      let callback =
+        let callback =
           this.findCallbackByStatus(response) ||
           this.findCallbackBySuccess(response) ||
           this.value('onResponse')
 
-      return callback(response)
-    })
+        return callback(response)
+      }, this.value('onConnectionError'))
 
     return (promise)
   }

@@ -235,16 +235,35 @@ describe(`httpClient`, () => {
     })
   })
 
-  it(`allows defining behavior on connection error`, () => {
-    expect.assertions(1)
+  describe('onConnectionError', () => {
+    it(`allows defining behavior on connection error`, () => {
+      expect.assertions(1)
 
-    this.fetch.get('/connection_error', () => { throw 'Connection Error'})
+      this.fetch.get('/connection_error', () => { throw 'Connection Error'})
 
-    const newClient = this.httpClient
-      .onConnectionError((err) => { expect(err).toEqual('Connection Error') })
-      .request('/connection_error')
+      const newClient = this.httpClient
+        .onConnectionError((err) => { expect(err).toEqual('Connection Error') })
+        .request('/connection_error')
 
-    newClient.run()
+      newClient.run()
+    })
+
+    it(`doesn't catch errors in other callbacks`, (done) => {
+      expect.assertions(1)
+
+      this.fetch.get('/connection_error', () => { throw 'Connection Error'})
+
+      const newClient = this.httpClient
+        .onSuccess((resp) => { throw 'Expected error' })
+        .onConnectionError((err) => { throw 'Unexpected error' })
+        .request('/test')
+
+      newClient.run().catch((err) => {
+        expect(err).toEqual('Expected error')
+        done()
+      })
+    })
+
   })
 
   it.skip(`allows reading the parsed_body`, () => {})
