@@ -103,17 +103,17 @@ describe(`httpClient`, () => {
 
     it(`gives precedence to onSuccess over onResponse`, (done) => {
       const onResponse = jest.fn()
-      const onError = jest.fn()
+      const onErrorResponse = jest.fn()
       const onSuccess = jest.fn((resp) => { expect(resp.body).toEqual('Hello') })
 
       const newClient = this.httpClient
             .onResponse(onResponse)
-            .onError(onError)
+            .onErrorResponse(onErrorResponse)
             .onSuccess(onSuccess)
 
       newClient.runRequest('/test').then(() => {
         expect(onResponse).not.toHaveBeenCalled()
-        expect(onError).not.toHaveBeenCalled()
+        expect(onErrorResponse).not.toHaveBeenCalled()
         expect(onSuccess).toHaveBeenCalled()
         done()
       })
@@ -132,34 +132,34 @@ describe(`httpClient`, () => {
       })
     })
 
-    it(`gives precedence to onError over onResponse`, (done) => {
+    it(`gives precedence to onErrorResponse over onResponse`, (done) => {
       const onResponse = jest.fn()
       const onSuccess = jest.fn()
-      const onError = jest.fn((resp) => { expect(resp.body).toEqual('Not Found') })
+      const onErrorResponse = jest.fn((resp) => { expect(resp.body).toEqual('Not Found') })
 
       const newClient = this.httpClient
             .onResponse(onResponse)
-            .onError(onError)
+            .onErrorResponse(onErrorResponse)
             .onSuccess(onSuccess)
 
       newClient.runRequest('/not_found').then(() => {
         expect(onResponse).not.toHaveBeenCalled()
         expect(onSuccess).not.toHaveBeenCalled()
-        expect(onError).toHaveBeenCalled()
+        expect(onErrorResponse).toHaveBeenCalled()
         done()
       })
     })
 
-    it(`gives precedence to onStatus(404) over onError`, (done) => {
+    it(`gives precedence to onStatus(404) over onErrorResponse`, (done) => {
       const onResponse = jest.fn()
       const onSuccess = jest.fn()
-      const onError = jest.fn()
+      const onErrorResponse = jest.fn()
       const on403 = jest.fn()
       const on404 = jest.fn((resp) => { expect(resp.body).toEqual('Not Found') })
 
       const newClient = this.httpClient
             .onResponse(onResponse)
-            .onError(onError)
+            .onErrorResponse(onErrorResponse)
             .onStatus(403, on403)
             .onStatus(404, on404)
             .onSuccess(onSuccess)
@@ -167,7 +167,7 @@ describe(`httpClient`, () => {
       newClient.runRequest('/not_found').then(() => {
         expect(onResponse).not.toHaveBeenCalled()
         expect(onSuccess).not.toHaveBeenCalled()
-        expect(onError).not.toHaveBeenCalled()
+        expect(onErrorResponse).not.toHaveBeenCalled()
         expect(on403).not.toHaveBeenCalled()
         expect(on404).toHaveBeenCalled()
         done()
@@ -219,7 +219,7 @@ describe(`httpClient`, () => {
       .runRequest('/assert_options')
   })
 
-  it(`allows clearing allbacks passing null`, (done) => {
+  it(`allows clearing callbacks passing null`, (done) => {
     const onSuccess = jest.fn()
     const on200 = jest.fn()
 

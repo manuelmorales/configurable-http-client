@@ -46,7 +46,7 @@ const httpClient = {
   },
 
   findCallbackBySuccess: function (resp) {
-    return resp.ok ? this.value('onSuccess') : this.value('onError')
+    return resp.ok ? this.value('onSuccess') : this.value('onErrorResponse')
   },
 
   request: function (url, opts) {
@@ -95,7 +95,7 @@ const httpClient = {
 httpClient.defineValue('fetch', () => global.fetch);
 httpClient.defineValue('onResponse', () => resp => resp);
 httpClient.defineValue('onSuccess');
-httpClient.defineValue('onError');
+httpClient.defineValue('onErrorResponse');
 httpClient.defineValue('onConnectionError', () => err => err);
 httpClient.defineMergedValue('onStatusCallbacks');
 httpClient.defineMergedValue('requestOptions');
