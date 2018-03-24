@@ -219,8 +219,23 @@ describe(`httpClient`, () => {
       .runRequest('/assert_options')
   })
 
+  it(`allows clearing allbacks passing null`, (done) => {
+    const onSuccess = jest.fn()
+    const on200 = jest.fn()
+
+    const newClient = this.httpClient
+      .onSuccess(onSuccess)
+      .onStatus(200, on200)
+      .onStatus(200, null)
+
+    newClient.runRequest('/test').then(() => {
+      expect(on200).not.toHaveBeenCalled()
+      expect(onSuccess).toHaveBeenCalled()
+      done()
+    })
+  })
+
   it.skip(`allows reading the parsed_body`, () => {})
-  it.skip(`allows clearing callbacks`, () => {}) // Pass null
   it.skip(`allows passing query params as a parameter`, () => {})
   it.skip(`allows defining behavior on connection error`, () => {})
 })
