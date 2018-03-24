@@ -1,6 +1,6 @@
 {
-  "name": "http-client",
-  "version": "0.0.0",
+  "name": "configurable-http-client",
+  "version": "0.0.1",
   "description": "HTTP client that allows being configured for different status codes.",
   "main": "index.js",
   "scripts": {
@@ -15,19 +15,18 @@
     "client",
     "REST",
     "status",
+    "fetch",
     "code"
   ],
   "author": "Manuel Morales",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/workshare/js-http-client/issues"
+    "url": "https://github.com/manuelmorales/configurable-http-client/issues"
   },
-  "homepage": "https://github.com/workshare/js-http-client#readme",
+  "homepage": "https://github.com/manuelmorales/configurable-http-client#readme",
   "devDependencies": {
     "fetch-mock": "^6.3.0",
-    "jest": "^22.1.4"
-  },
-  "dependencies": {
+    "jest": "^22.1.4",
     "node-fetch": "^2.1.1"
   }
 }

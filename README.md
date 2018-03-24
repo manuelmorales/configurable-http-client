@@ -3,8 +3,13 @@
 Configurable HTTP Client is a `fetch` wrapper that allows configuring it's
 options and callbacks with a fluid interface:
 
+```bash
+npm install --save configurable-http-client
+```
+
+
 ```javascript
-import httpClient from 'http-client'
+import httpClient from 'configurable-http-client'
 
 const client = httpClient
   .requestOptions({credentials: 'same-origin'})
