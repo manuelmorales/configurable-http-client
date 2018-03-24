@@ -90,7 +90,7 @@ import configuredClient from 'configuredClient'
 const currentUserRepository = {
   find: async id => {
     const user = await configuredClient
-      .onStatus(401, () => { return null }) # <= We override the 401 behavior
+      .onStatus(401, () => { return null }) // <= We override the 401 behavior
       .onStatus(200, (resp) => { return await resp.json() })
       .runRequest(`/current_user.json`)
     return user
