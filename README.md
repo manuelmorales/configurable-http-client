@@ -81,7 +81,10 @@ export default commentsRepository
 As you can see this allowed moving responsibilities around.
 Although similar behavior could be achieved by providing a wrapper function
 around `fetch` that uses `then()` to redirect in case of being logged out,
-with this library we can override behaviors at any point:
+with this library we can override behaviors at any point.
+
+In the example below, the `currentUserRepository` overrides the behavior in
+case of 401:
 
 
 ```javascript
@@ -103,7 +106,7 @@ export default currentUserRepository
 ## Usage
 
 You can first register some callbacks and then run the request with
- **runRequest**, which receives the same arguments than `fetch()` and
+ **runRequest**, which receives the same arguments as `fetch()` and
 will return a promise:
 
 ```javascript
@@ -129,7 +132,7 @@ Callbacks can be overwritten:
 ```javascript
 httpClient
   .onStatus(401, () => { throw 'A 401!!!' })
-  .onStatus(401, () => { console.log('A 401') }) # Only this one will be executed in case of 401
+  .onStatus(401, () => { console.log('A 401') }) // Only this one will be executed in case of 401
   .runRequest('/')
 ```
 
@@ -138,7 +141,7 @@ This also allows to clear an already existing callback passing `null`:
 ```javascript
 httpClient
   .onStatus(401, () => { throw 'A 401!!!' })
-  .onStatus(401, null) # Clears the callback above
+  .onStatus(401, null) // Clears the callback above
   .runRequest('/')
 ```
 
@@ -172,7 +175,7 @@ Those will be merged with the ones given to the request:
 httpClient
   .requestOptions({credentials: 'same-origin'})
   .runRequest('/', {method: 'POST'})
-  # Will result into fetch('/', {credentials: 'same-origin', method: 'POST'})
+  // Will result into fetch('/', {credentials: 'same-origin', method: 'POST'})
 ```
 
 For convenience it also accepts a **json_body** option that will also set
