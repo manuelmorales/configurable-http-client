@@ -1,7 +1,7 @@
 # Configurable HTTP Client
 
 Configurable HTTP Client is a `fetch` wrapper that allows configuring it's
-options and callbacks with a fluid interface:
+options and callbacks with a fluent interface:
 
 ```bash
 npm install --save configurable-http-client
