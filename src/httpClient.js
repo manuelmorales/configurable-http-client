@@ -78,24 +78,24 @@ const httpClient = {
     }
 
     const promise = fetch(url, fetchOpts)
-      .then((response) => {
+      .then(function(response) {
         let callback =
           this.findCallbackByStatus(response) ||
           this.findCallbackBySuccess(response) ||
           this.value('onResponse')
 
         return callback(response)
-      }, this.value('onConnectionError'))
+      }.bind(this), this.value('onConnectionError'))
 
     return (promise)
   }
 };
 
-httpClient.defineValue('fetch', () => global.fetch);
-httpClient.defineValue('onResponse', () => resp => resp);
+httpClient.defineValue('fetch', function() { return global.fetch });
+httpClient.defineValue('onResponse', function() { return function(resp) { return resp }});
 httpClient.defineValue('onSuccess');
 httpClient.defineValue('onErrorResponse');
-httpClient.defineValue('onConnectionError', () => (err) => { throw err });
+httpClient.defineValue('onConnectionError', function() { return function(err) { throw err }});
 httpClient.defineMergedValue('onStatusCallbacks');
 httpClient.defineMergedValue('requestOptions');
 httpClient.defineValue('url');

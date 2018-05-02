@@ -275,6 +275,7 @@ describe(`httpClient`, () => {
       })
     })
 
+    it.skip(`is respecful with the hyerarchy`, () => {})
   })
 
   it.skip(`allows reading the parsed_body`, () => {})
