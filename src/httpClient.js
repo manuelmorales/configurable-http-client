@@ -79,7 +79,7 @@ const httpClient = {
 
     const promise = fetch(url, fetchOpts)
       .then(function(response) {
-        let callback =
+        const callback =
           this.findCallbackByStatus(response) ||
           this.findCallbackBySuccess(response) ||
           this.value('onResponse')
