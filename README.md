@@ -13,7 +13,7 @@ import httpClient from 'configurable-http-client'
 
 const client = httpClient
   .requestOptions({credentials: 'same-origin'})
-  .onError(() => { throw "there was an error" })
+  .onErrorResponse(() => { throw "there was an error" })
   .onStatus(401, () => { redirectToLogin() })
 
 client.runRequest('http://example.com')
@@ -62,7 +62,7 @@ import client from 'http-client'
 
 const configuredClient = httpClient
   .requestOptions({credentials: 'same-origin'})
-  .onError(() => { throw `Error ${response.status}` })
+  .onErrorResponse(() => { throw `Error ${response.status}` })
   .onStatus(401, () => { document.location.assign('/logout') })
 }
 
@@ -125,12 +125,12 @@ You can accumulate the following callbacks:
 
 * **onResponse(callback)**: Will be called if there is a response from the server.
 * **onSuccess(callback)**: Will be called if there is a 2XX response from the server.
-* **onError(callback)**: Will be called if there is a non 2XX response from the server.
+* **onErrorResponse(callback)**: Will be called if there is a non 2XX response from the server.
 * **onStatus(statusCode, callback)**: Will be called if there is a response from the server with that specific status code.
 
 In case of conflict, only the most specific callback will be called.
 In case of receiving a 401, `onStatus(401, c)` takes precedence over
-`onError(c)` which takes precedence over `onResponse(c)`.
+`onErrorResponse(c)` which takes precedence over `onResponse(c)`.
 
 Callbacks can be overwritten:
 
