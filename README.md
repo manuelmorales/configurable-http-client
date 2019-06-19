@@ -190,3 +190,12 @@ the `Content-Type` headers correctly:
 httpClient.runRequest('/post', { method: 'POST', json_body: {a: 1} })
 ```
 
+
+## Dependencies and security vulnerabilities
+
+The following dependencies has been added to `package.json` not because they are a required
+dependency but because older versions of them contain security vulnerabilities.
+
+* cryptiles.
+* lodash.
+* extend.
