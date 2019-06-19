@@ -27,6 +27,6 @@
   "devDependencies": {
     "fetch-mock": "^7.3.3",
     "jest": "^24.8.0",
-    "node-fetch": "^2.1.2"
+    "node-fetch": "^2.6.0"
   }
 }
