@@ -39,7 +39,7 @@ describe(`httpClient`, function() {
       this.httpClient.runRequest('/test')
 
         .then((resp) => {
-          expect(resp.body).toEqual("Hello")
+          expect(resp.body.toString()).toEqual("Hello")
           done()
         })
 
@@ -91,7 +91,7 @@ describe(`httpClient`, function() {
 
   describe(`on 200`, function() {
     it(`onResponse is called`, (done) => {
-      const onResponse = jest.fn((resp) => { expect(resp.body).toEqual('Hello') })
+      const onResponse = jest.fn((resp) => { expect(resp.body.toString()).toEqual('Hello') })
 
       const newClient = this.httpClient.onResponse(onResponse)
 
@@ -104,7 +104,7 @@ describe(`httpClient`, function() {
     it(`gives precedence to onSuccess over onResponse`, (done) => {
       const onResponse = jest.fn()
       const onErrorResponse = jest.fn()
-      const onSuccess = jest.fn((resp) => { expect(resp.body).toEqual('Hello') })
+      const onSuccess = jest.fn((resp) => { expect(resp.body.toString()).toEqual('Hello') })
 
       const newClient = this.httpClient
             .onResponse(onResponse)
@@ -122,7 +122,7 @@ describe(`httpClient`, function() {
 
   describe(`on 400`, function() {
     it(`onResponse is called`, (done) => {
-      const onResponse = jest.fn((resp) => { expect(resp.body).toEqual('Not Found') })
+      const onResponse = jest.fn((resp) => { expect(resp.body.toString()).toEqual('Not Found') })
 
       const newClient = this.httpClient.onResponse(onResponse)
 
@@ -135,7 +135,7 @@ describe(`httpClient`, function() {
     it(`gives precedence to onErrorResponse over onResponse`, (done) => {
       const onResponse = jest.fn()
       const onSuccess = jest.fn()
-      const onErrorResponse = jest.fn((resp) => { expect(resp.body).toEqual('Not Found') })
+      const onErrorResponse = jest.fn((resp) => { expect(resp.body.toString()).toEqual('Not Found') })
 
       const newClient = this.httpClient
             .onResponse(onResponse)
@@ -155,7 +155,7 @@ describe(`httpClient`, function() {
       const onSuccess = jest.fn()
       const onErrorResponse = jest.fn()
       const on403 = jest.fn()
-      const on404 = jest.fn((resp) => { expect(resp.body).toEqual('Not Found') })
+      const on404 = jest.fn((resp) => { expect(resp.body.toString()).toEqual('Not Found') })
 
       const newClient = this.httpClient
             .onResponse(onResponse)

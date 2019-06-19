@@ -1,6 +1,6 @@
 {
   "name": "configurable-http-client",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "HTTP client that allows being configured for different status codes.",
   "main": "src/httpClient.js",
   "scripts": {
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/workshare/js-http-client.git"
+    "url": "git+ssh://git@github.com/manuelmorales/configurable-http-client.git"
   },
   "keywords": [
     "HTTP",
@@ -25,8 +25,8 @@
   },
   "homepage": "https://github.com/manuelmorales/configurable-http-client#readme",
   "devDependencies": {
-    "fetch-mock": "^6.3.0",
-    "jest": "^22.4.3",
+    "fetch-mock": "^7.3.3",
+    "jest": "^24.8.0",
     "node-fetch": "^2.1.2"
   }
 }
