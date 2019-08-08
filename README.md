@@ -34,8 +34,12 @@ that we call _repositories_.
 const commentsRepository = {
   find: async id => {
     const response = await fetch(
-      `/comments/${id}.json`,
-      {credentials: 'same-origin'}
+      `/comments/${id}.json`, {
+        credentials: 'same-origin',
+        headers: {
+          'unique-identifier': uuid()
+        }
+      }
     )
 
     if (response.status === 401) { document.location.assign('/logout') }
@@ -52,6 +56,7 @@ There is some behavior in the `commentsRepository` that would be better defined
 as a default at an application level:
 
 * `{credentials: 'same-origin'}` will always be there.
+* We also want to have the capability to create dynamic fetch options (like the uuid in the headers)
 * Redirect to `/logout` on 401.
 * Throw error when status is not 2XX.
 
@@ -59,8 +64,14 @@ With this library, these behaviors can be defined at an application level:
 
 ```javascript
 import client from 'http-client'
+import uuid from 'uuid/v4'
 
 const configuredClient = httpClient
+  .onBeforeRun((httpClient) => httpClient.requestOptions({
+    headers: {
+      'unique-identifier': uuid()  
+    }  
+  }))
   .requestOptions({credentials: 'same-origin'})
   .onErrorResponse(() => { throw `Error ${response.status}` })
   .onStatus(401, () => { document.location.assign('/logout') })
@@ -123,6 +134,8 @@ httpClient
 
 You can accumulate the following callbacks:
 
+* **onBeforeRun(callback)**: Will be called before running each request. **It needs to be a function that receives the 
+httpClient and returns it.**
 * **onResponse(callback)**: Will be called if there is a response from the server.
 * **onSuccess(callback)**: Will be called if there is a 2XX response from the server.
 * **onErrorResponse(callback)**: Will be called if there is a non 2XX response from the server.
