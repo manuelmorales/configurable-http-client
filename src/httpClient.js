@@ -60,6 +60,10 @@ const httpClient = {
   },
 
   run: function () {
+    return this.value('onBeforeRun')(this).doRun()
+  },
+
+  doRun: function () {
     const url = this.value('url')
     const opts = this.value('requestOptions')
 
@@ -92,6 +96,7 @@ const httpClient = {
 };
 
 httpClient.defineValue('fetch', function() { return global.fetch });
+httpClient.defineValue('onBeforeRun', function() { return function(httpClient) {return httpClient} });
 httpClient.defineValue('onResponse', function() { return function(resp) { return resp }});
 httpClient.defineValue('onSuccess');
 httpClient.defineValue('onErrorResponse');
