@@ -175,34 +175,27 @@ describe(`httpClient`, function() {
     })
   }.bind(this))
 
-    it(`executes the beforeRun function passing itself as the argument`, () => {
-        const beforeRunCallback = jest.fn(httpClient => httpClient)
-        this.httpClient.onBeforeRun(beforeRunCallback).runRequest(`/test`)
+  it(`executes the onBeforeRun function before running the request`, (done) => {
+    const someDynamicContent = (n) => ++n
 
-        expect(beforeRunCallback).toHaveBeenCalledWith(this.httpClient.url(`/test`).requestOptions({}).onBeforeRun(beforeRunCallback))
-    })
-
-    it(`executes the onBeforeRun function before running the request`, (done) => {
-        const someDynamicContent = (n) => ++n
-
-        const beforeRunCallback = (httpClient) => {
-            return httpClient.requestOptions({
-                headers: {
-                    'some-header': someDynamicContent(0)
-                }
-            })
+    const beforeRunCallback = (httpClient) => {
+      return httpClient.requestOptions({
+        headers: {
+          'some-header': someDynamicContent(0)
         }
+      })
+    }
 
-        this.fetch.get(`/assert_options`, (path, opts) => {
-            return new Promise((resolve) => {
-                expect(opts).toEqual({headers: {'some-header': 1}})
-                resolve(`Some body`)
-                done()
-            })
-        })
-
-        this.httpClient.onBeforeRun(beforeRunCallback).runRequest(`/assert_options`)
+    this.fetch.get(`/assert_options`, (path, opts) => {
+      return new Promise((resolve) => {
+        expect(opts).toEqual({headers: {'some-header': 1}})
+        resolve(`Some body`)
+        done()
+      })
     })
+
+    this.httpClient.onBeforeRun(beforeRunCallback).runRequest(`/assert_options`)
+  })
 
   it(`allows POST`, (done) => {
     this.fetch.post(`/post`, "Hello")
