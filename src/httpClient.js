@@ -65,23 +65,24 @@ const httpClient = {
 
   doRun: function () {
     const url = this.value('url')
-    const opts = this.value('requestOptions')
+    const opts = Object.assign({}, this.value('requestOptions')) || {}
+
+    opts.headers = Object.assign({}, opts.headers, this.value('headers'))
 
     const fetch = this.value('fetch')
-    const fetchOpts = Object.assign({}, opts) || {}
 
-    if (fetchOpts.json_body) {
-      fetchOpts['body'] = JSON.stringify(fetchOpts.json_body)
+    if (opts.json_body) {
+      opts['body'] = JSON.stringify(opts.json_body)
 
-      fetchOpts['headers'] = Object.assign(
+      opts['headers'] = Object.assign(
         opts.headers || {},
         {'Content-Type':'application/json; charset=utf-8'}
       )
 
-      delete fetchOpts.json_body
+      delete opts.json_body
     }
 
-    const promise = fetch(url, fetchOpts)
+    const promise = fetch(url, opts)
       .then(function(response) {
         const callback =
           this.findCallbackByStatus(response) ||
@@ -103,6 +104,7 @@ httpClient.defineValue('onErrorResponse');
 httpClient.defineValue('onConnectionError', function() { return function(err) { throw err }});
 httpClient.defineMergedValue('onStatusCallbacks');
 httpClient.defineMergedValue('requestOptions');
+httpClient.defineMergedValue('headers');
 httpClient.defineValue('url');
 
 httpClient.onStatus = function (status, callback) {
