@@ -221,12 +221,27 @@ describe(`httpClient`, function() {
     }.bind(this))
   })
 
+  it(`allows passing a header`, (done) => {
+    this.fetch.post(`/post`, (path, opts) => {
+      expect(opts.headers['testHeader']).toEqual('TEST-HEADER')
+      expect(opts.headers['newHeader']).toEqual('NEW-HEADER')
+      return 200
+    })
+
+    const opts = { method: `POST`, headers: {testHeader: 'TEST-HEADER'} }
+
+    this.httpClient.headers({newHeader: 'NEW-HEADER'}).runRequest(`/post`, opts).then(function() {
+      expect(this.fetch.called(`/post`)).toBe(true)
+      done()
+    }.bind(this))
+  })
+
   it(`allows setting the request before the callbacks with request()`, (done) => {
     this.httpClient.request(`/test`).onStatus(200, function() { done() }).run()
   })
 
   it(`allows setting the request options before the callbacks`, (done) => {
-    const options = {credentials: `same-origin`}
+    const options = {credentials: `same-origin`, headers: {}}
 
     this.fetch.get(`/assert_options`, (path, opts) => {
       return new Promise((resolve) => {
