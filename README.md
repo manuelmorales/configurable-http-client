@@ -203,6 +203,26 @@ the `Content-Type` headers correctly:
 httpClient.runRequest('/post', { method: 'POST', json_body: {a: 1} })
 ```
 
+It is possible to set additional headers with **headers()**.
+Those will be merged with the ones given to the request:
+
+```javascript
+httpClient
+  .headers({'custom-header': 'custom header'})
+  .runRequest('/', {method: 'POST'})
+  // Will result into fetch('/', { method: 'POST', headers: { 'custom-header': 'custom header' }})
+```
+
+It is possible to set additional parameter by using a context object with **context()**.
+ This can be retrieved with  **onStatusCallbacks()**, **onSuccess()**, **onResponse()**, **onErrorResponse()**
+
+```javascript
+httpClient
+  .context('custom-data' : 'custom data')
+  .onSuccess(response, context){
+  // operations with context object
+  }
+```
 
 ## Dependencies and security vulnerabilities
 
