@@ -66,6 +66,7 @@ const httpClient = {
   doRun: function () {
     const url = this.value('url')
     const opts = Object.assign({}, this.value('requestOptions')) || {}
+    const context = Object.assign({}, this.value('context'))
 
     opts.headers = Object.assign({}, opts.headers, this.value('headers'))
 
@@ -89,7 +90,7 @@ const httpClient = {
           this.findCallbackBySuccess(response) ||
           this.value('onResponse')
 
-        return callback(response)
+        return callback(response, context)
       }.bind(this), this.value('onConnectionError'))
 
     return (promise)
@@ -105,6 +106,8 @@ httpClient.defineValue('onConnectionError', function() { return function(err) { 
 httpClient.defineMergedValue('onStatusCallbacks');
 httpClient.defineMergedValue('requestOptions');
 httpClient.defineMergedValue('headers');
+httpClient.defineMergedValue('context');
+
 httpClient.defineValue('url');
 
 httpClient.onStatus = function (status, callback) {
