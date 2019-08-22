@@ -236,6 +236,16 @@ describe(`httpClient`, function() {
     }.bind(this))
   })
 
+  it(`allows passing a context`, (done) => {
+    this.fetch.post(`/post`, () => { return 200 })
+
+    this.httpClient.onSuccess((response, context) => {
+      expect(context).toEqual({firstContext: 'FIRST-CONTEXT', secondContext: 'SECOND-CONTEXT' })
+      done()
+    }).context({firstContext: 'FIRST-CONTEXT'}).context({secondContext: 'SECOND-CONTEXT'}).runRequest(`/post`, {method: `POST`})
+
+  })
+
   it(`allows setting the request before the callbacks with request()`, (done) => {
     this.httpClient.request(`/test`).onStatus(200, function() { done() }).run()
   })
@@ -318,3 +328,4 @@ describe(`httpClient`, function() {
   it.skip(`allows reading the parsed_body`, function() {})
   it.skip(`allows passing query params as a parameter`, function() {})
 })
+
