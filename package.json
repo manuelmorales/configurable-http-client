@@ -1,6 +1,6 @@
 {
   "name": "configurable-http-client",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "HTTP client that allows being configured for different status codes.",
   "main": "src/httpClient.js",
   "scripts": {
